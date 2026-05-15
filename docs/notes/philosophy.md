@@ -12,7 +12,7 @@ It is not a tool, a framework, or a method. It is the philosophy under which too
 
 > **Intent. Leverage. Judgment.**
 
-These three words are the irreducible core. They are not a process — there is no order, no first step. They are the three faces of the same discipline, each of which must be present for mind coding to be happening at all.
+These three words are the irreducible core. They are not a process — there is no order, no first step. They are the three pillars of the same discipline, each of which must be present for mind coding to be happening at all.
 
 - **Intent** — you hold the design before the machine moves. The mental model is yours. The shape of the system is yours. The *why* is yours.
 - **Leverage** — you reach further than your hands can. Skills, tools, agents, harnesses, and codified expertise extend what one developer can deliver, without diluting what they design.
@@ -22,15 +22,22 @@ A mind coder is recognizable by all three being present.
 
 ## The tenets
 
-The creed names what mind coding *is*. The tenets are how it shows up in practice — beliefs a mind coder holds, day to day, line by line.
+The creed names what mind coding *is*. The tenets are how it shows up in practice — beliefs a mind coder holds, day to day, line by line. They are grouped by pillar.
 
-1. **Intent precedes prompt.** Form the mental model first; direct the machine second.
-2. **The design is yours.** Architecture, naming, and boundaries are the developer's responsibility, never delegated.
-3. **Review is the work.** Reading and judging AI output is the central act, not the afterthought.
-4. **Quality is the product.** Working code is the artifact. Well-designed systems are the product.
-5. **Skills compound.** Capture what works as reusable artifacts so the next session starts smarter than the last.
-6. **Cognitive load is a budget.** Spend it on design and edges. Delegate the rote.
-7. **Evaluate or don't ship.** If you cannot judge it, you do not understand it.
+### Intent
+
+- **Intent precedes prompt.** Form the mental model first; direct the machine second.
+- **You decide the how.** AI might propose, but you make the call.
+
+### Leverage
+
+- **Amplify, don't outsource.** AI multiplies the developer's mind; it does not substitute for it.
+- **Skills compound.** Codify what works so the next session starts smarter than the last.
+
+### Judgment
+
+- **You answer for the code.** Quality and reliability of the code — that's on you.
+- **Evaluate or don't ship.** If you can't understand it, you can't judge it; if you can't judge it, don't ship it.
 
 Each tenet is meant to be testable in the moment: a mind coder can ask, *"Am I holding to this right now?"* and the answer is usually clear.
 
@@ -42,7 +49,7 @@ Mind coding is an umbrella, not a method. Many established practices express it 
 - Skill libraries, agent harnesses, and codified expertise multiply *leverage*.
 - Test-first development, oracle-driven verification, and review checklists scale *judgment*.
 
-These are *mind-multipliers* — methodologies and artifacts that amplify a developer's cognitive output, the way a force multiplier amplifies a soldier's effective force. The umbrella is generative: new mind-multipliers can be proposed, cataloged, and tagged by which face they amplify. The philosophy provides the criteria; practitioners provide the multipliers.
+These are *mind-multipliers* — methodologies and artifacts that amplify a developer's cognitive output, the way a force multiplier amplifies a soldier's effective force. The umbrella is generative: new mind-multipliers can be proposed, cataloged, and tagged by which pillar they amplify. The philosophy provides the criteria; practitioners provide the multipliers.
 
 ## What this opens up
 
@@ -54,8 +61,7 @@ It also makes the discipline defensible. A team can adopt the creed, hold to the
 
 These are unresolved and worth pressure-testing with collaborators:
 
-- Are seven tenets the right number, and are these the right seven? Some may collapse into others; some may be missing.
-- What is the relationship between the tenets and the creed — strict expansions, or independent commitments?
 - How sharply should "mind-multiplier" be defined to keep the umbrella disciplined as the catalog grows? A two-line admission test is one option.
-- How are skillforests structured — by domain, by face of the creed, by seniority, or some combination?
+- How are skillforests structured — by domain, by pillar, by seniority, or some combination?
 - Should the philosophy be expressed as a manifesto (declarative, signed) or as a living document (iterative, versioned)?
+- The principle of *earned delegation* (AI takes on more decisions as it demonstrates reliable, comprehensive results) is currently considered subsumed by *Skills compound* — every codified skill is a unit of earned delegation. Worth a second look once mind-multipliers are cataloged.
