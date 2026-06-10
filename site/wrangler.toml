@@ -1,0 +1,7 @@
+# Cloudflare Pages — static site.
+# Deploy with: npx wrangler pages deploy dist   (run after `npm run build`)
+# Or wire the repo to Pages with: build cmd `npm run build`, root dir `site`,
+# output dir `dist`.
+name = "mindcoding-institute"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-06-11"

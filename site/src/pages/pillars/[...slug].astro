@@ -1,0 +1,49 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ResourceList from '../../components/ResourceList.astro';
+
+export const getStaticPaths = (async () => {
+  const pillars = await getCollection('pillars');
+  return pillars.map((pillar) => ({
+    params: { slug: pillar.id },
+    props: { pillar },
+  }));
+}) satisfies GetStaticPaths;
+
+const { pillar } = Astro.props;
+const { Content } = await render(pillar);
+const { name, summary, tenets, resources } = pillar.data;
+---
+
+<BaseLayout title={`${name} — Mind Coding Institute`} description={summary} docs>
+  <article class="prose">
+    <p class="pillar-tag">[ {name} ]</p>
+    <h1>{name}</h1>
+    <p class="lead">{summary}</p>
+    <Content />
+  </article>
+
+  <section class="accordions" aria-label={`${name} tenets and resources`}>
+    {
+      tenets.map((t) => (
+        <details is-="accordion">
+          <summary>{t.title}</summary>
+          <p>{t.details}</p>
+        </details>
+      ))
+    }
+    <details is-="accordion">
+      <summary>Resources</summary>
+      <ResourceList resources={resources} />
+    </details>
+  </section>
+</BaseLayout>
+
+<style>
+  .lead {
+    color: var(--foreground1);
+    font-size: 1.15rem;
+  }
+</style>

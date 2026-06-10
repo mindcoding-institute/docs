@@ -1,0 +1,34 @@
+---
+interface Resource {
+  label: string;
+  url?: string;
+  note?: string;
+}
+
+interface Props {
+  resources: Resource[];
+}
+
+const { resources } = Astro.props;
+---
+
+{
+  resources.length === 0 ? (
+    <p class="todo">Coming soon.</p>
+  ) : (
+    <ul class="resource-list">
+      {resources.map((r) => (
+        <li>
+          {r.url ? (
+            <a href={r.url} rel="noopener">
+              {r.label}
+            </a>
+          ) : (
+            <span>{r.label}</span>
+          )}
+          {r.note && <span class="note"> — {r.note}</span>}
+        </li>
+      ))}
+    </ul>
+  )
+}

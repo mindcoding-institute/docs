@@ -1,0 +1,9 @@
+# local Workjournal pin
+.workjournal
+
+# editor / OS cruft
+.DS_Store
+*~lock~
+
+# node (site/ has its own, this guards the root)
+node_modules/

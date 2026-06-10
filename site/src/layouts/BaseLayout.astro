@@ -1,0 +1,72 @@
+---
+import '../styles/global.css';
+import SideNav from '../components/SideNav.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** full-bleed, no shell/sidebar (the landing hero) */
+  bare?: boolean;
+  /** documentation layout: left sidenav + content */
+  docs?: boolean;
+}
+
+const {
+  title = 'Mind Coding Institute',
+  description = 'Mind coding — the discipline of directing AI to build well-designed systems. Intent. Leverage. Judgment.',
+  bare = false,
+  docs = false,
+} = Astro.props;
+
+const year = 2026;
+---
+
+<!doctype html>
+<html lang="en" data-webtui-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>{title}</title>
+  </head>
+  <body>
+    {
+      bare ? (
+        <main>
+          <slot />
+        </main>
+      ) : docs ? (
+        <div class="docs">
+          <aside class="docs-sidebar">
+            <SideNav />
+          </aside>
+          <main class="docs-main">
+            <div class="docs-content">
+              <slot />
+            </div>
+          </main>
+        </div>
+      ) : (
+        <main class="shell">
+          <slot />
+        </main>
+      )
+    }
+    <footer class="site">
+      <div class="shell">
+        <span><span class="prompt">$</span> mindcoding.institute</span>
+        <nav class="footer-links" aria-label="Footer">
+          <a href="/">home</a>
+          <a href="https://github.com/mindcoding-institute/docs" rel="noopener"
+            >github</a
+          >
+        </nav>
+        <span class="copyright"
+          >© {year}
+          <a href="https://venturesquad.eu" rel="noopener">venturesquad.eu</a></span
+        >
+      </div>
+    </footer>
+  </body>
+</html>

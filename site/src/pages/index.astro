@@ -1,0 +1,135 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const pillars = ['Intent', 'Leverage', 'Judgment'] as const;
+
+// The hero cycles the six tenets, grouped by pillar so the pillar highlight
+// holds while its two tenets pass. Title + explanation shuffle in step; the
+// matching pillar lights up green and gains [ ] brackets.
+const slides = [
+  {
+    pillar: 'Intent',
+    title: 'Intent precedes prompt',
+    explanation:
+      'Form the mental model first, then direct the machine. The prompt is where a decision you already made gets handed over — not where the thinking happens.',
+  },
+  {
+    pillar: 'Intent',
+    title: 'You decide the how',
+    explanation:
+      'Architecture, naming, and boundaries are yours to choose. A model can propose; adopting an idea because you judged it right is not the same as taking the first one offered.',
+  },
+  {
+    pillar: 'Leverage',
+    title: "Amplify, don't outsource",
+    explanation:
+      'Tools, agents, and harnesses should extend a mind that is engaged, not stand in for one that checked out. The same tool amplifies or abdicates depending on you.',
+  },
+  {
+    pillar: 'Leverage',
+    title: 'Skills compound',
+    explanation:
+      'Capture what works as reusable skills so each session starts further along. A good prompt helps once; a codified skill helps every time, for everyone who has it.',
+  },
+  {
+    pillar: 'Judgment',
+    title: 'You answer for the code',
+    explanation:
+      "'The model wrote it' is not a defence. When code ships, you answer for its correctness and its consequences — authorship by a machine changes nothing.",
+  },
+  {
+    pillar: 'Judgment',
+    title: "Evaluate or don't ship",
+    explanation:
+      "You cannot evaluate what you don't understand, and must not ship what you can't evaluate. When understanding is missing, the honest move is to stop — not to ship and hope.",
+  },
+];
+
+const first = slides[0];
+---
+
+<BaseLayout bare>
+  <section class="hero shell" id="hero" data-slides={JSON.stringify(slides)}>
+    <div class="bigmark" aria-hidden="true">
+      <span class="brk">&lt;</span><span class="ltr">M</span><span class="brk"
+        >&gt;</span
+      >
+    </div>
+    <h1 class="sr-only">Mind Coding Institute</h1>
+
+    <nav class="pillars" aria-label="Pillars">
+      {
+        pillars.map((p) => (
+          <a
+            class="pillar"
+            href={`/pillars/${p.toLowerCase()}`}
+            data-pillar={p}
+            class:list={[{ active: p === first.pillar }]}
+          >
+            {p}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="shuffle tenet-title cursor">{first.title}</div>
+    <div class="shuffle tenet-expl">{first.explanation}</div>
+
+    <div class="cta">
+      <a is-="button" box-="square" variant-="background3" href="/approach"
+        >the approach</a
+      >
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { TypeShuffle } from '../scripts/typeShuffle.js';
+
+  const hero = document.getElementById('hero');
+  if (hero) {
+    const slides = JSON.parse(hero.dataset.slides || '[]');
+    const titleEl = hero.querySelector<HTMLElement>('.tenet-title')!;
+    const explEl = hero.querySelector<HTMLElement>('.tenet-expl')!;
+    const pillarEls = new Map(
+      [...hero.querySelectorAll<HTMLElement>('.pillar')].map((el) => [
+        el.dataset.pillar,
+        el,
+      ])
+    );
+
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const title = new TypeShuffle(titleEl);
+    const expl = new TypeShuffle(explEl);
+
+    let i = -1;
+    const show = () => {
+      i = (i + 1) % slides.length;
+      const s = slides[i];
+      pillarEls.forEach((el, name) => el.classList.toggle('active', name === s.pillar));
+      title.setText(s.title);
+      expl.setText(s.explanation);
+      if (!reduce) {
+        title.trigger({ spread: 650 });
+        expl.trigger({ spread: 1300 });
+      }
+    };
+
+    show();
+    if (slides.length > 1) setInterval(show, 6600);
+  }
+</script>
+
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>

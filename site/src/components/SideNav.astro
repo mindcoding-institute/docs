@@ -1,0 +1,47 @@
+---
+import { getCollection } from 'astro:content';
+
+const pillars = (await getCollection('pillars')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+
+const path = Astro.url.pathname.replace(/\/$/, '');
+const isActive = (href: string) => path === href.replace(/\/$/, '');
+---
+
+<nav class="sidenav" aria-label="Documentation">
+  <a class="brand" href="/"
+    ><span class="brk">&lt;</span><span class="ltr">M</span><span class="brk"
+      >&gt;</span
+    ></a
+  >
+
+  <div class="nav-group">
+    <p class="group">Guide</p>
+    <ul>
+      <li>
+        <a href="/approach" aria-current={isActive('/approach') ? 'page' : undefined}>
+          Approach
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="nav-group">
+    <p class="group">Pillars</p>
+    <ul>
+      {
+        pillars.map((p) => (
+          <li>
+            <a
+              href={`/pillars/${p.id}`}
+              aria-current={isActive(`/pillars/${p.id}`) ? 'page' : undefined}
+            >
+              {p.data.name}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</nav>
