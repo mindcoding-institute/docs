@@ -71,6 +71,9 @@
 @layer site {
   body {
     min-height: 100dvh;
+    /* Hard floor: never render narrower than 430px — below that the page
+       scrolls horizontally rather than shrinking/breaking further. */
+    min-width: 430px;
     display: flex;
     flex-direction: column;
   }
@@ -325,18 +328,35 @@
       border-right: none;
       border-bottom: 1px solid var(--foreground1);
     }
+    /* Top bar: keep the <M> icon, lay the links out inline and smaller. */
     .sidenav {
       position: static;
-    }
-    .sidenav ul {
-      grid-auto-flow: column;
-      grid-auto-columns: max-content;
-      gap: 1ch 2ch;
+      display: flex;
       flex-wrap: wrap;
+      align-items: center;
+      gap: 0.4lh 2ch;
+      font-size: 0.8rem;
     }
-    .sidenav .brand,
+    .sidenav .brand {
+      margin-bottom: 0;
+      font-size: 1.3rem;
+    }
+    /* drop the group label, let each group's links flow into the flex row */
     .sidenav .group {
       display: none;
+    }
+    /* flatten group > ul > li so every link is a flex item in one row */
+    .sidenav .nav-group,
+    .sidenav ul,
+    .sidenav li {
+      display: contents;
+    }
+    .sidenav a {
+      padding: 0.1lh 1ch;
+      border-left: none;
+    }
+    .sidenav a[aria-current='page'] {
+      border-left: none;
     }
   }
 
@@ -383,9 +403,11 @@
     display: flex;
     gap: 2.5ch;
     justify-content: center;
-    flex-wrap: wrap;
+    /* Stay on one line; the font shrinks with the viewport (down to the
+       430px page floor) so the row never has to wrap. */
+    flex-wrap: nowrap;
     font-family: var(--heading-font-family);
-    font-size: clamp(0.95rem, 2.6vw, 1rem);
+    font-size: min(1rem, calc((max(430px, 100vw) - 3rem) / 25));
     text-transform: uppercase;
     letter-spacing: 0.12em;
   }
@@ -406,20 +428,22 @@
     margin-left: 0.4ch;
   }
 
-  /* Tenet title — shuffled, the headline of the hero */
+  /* Tenet title — shuffled, the headline of the hero. Fixed ~24-col grid, so
+     the size is tied to viewport width below ~620px to keep it on screen. */
   .tenet-title {
     font-family: var(--heading-font-family);
-    font-size: clamp(1.9rem, 6.5vw, 2rem);
+    font-size: min(2rem, calc((max(430px, 100vw) - 3rem) / 17));
     color: var(--accent);
     text-transform: uppercase;
     line-height: 1.15;
     min-height: 1.3em;
   }
 
-  /* Tenet explanation — fixed-grid shuffle in monospace Gohu */
+  /* Tenet explanation — fixed 48-col shuffle in monospace Gohu; size scales
+     with viewport so the grid fits down to ~430px without overflowing. */
   .tenet-expl {
     font-family: 'GohuFont uni14 Nerd Font Mono', ui-monospace, monospace;
-    font-size: clamp(1.1rem, 2.8vw, 1.5rem);
+    font-size: min(1.5rem, calc((max(430px, 100vw) - 3rem) / 30));
     color: var(--foreground0);
     line-height: 1.4;
     min-height: 5.6em;
