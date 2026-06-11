@@ -13,6 +13,9 @@
 const CHARSET =
   'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&@$<>/\\*+-=:;.'.split('');
 
+// palette colours flashed on characters while they shuffle; cleared on settle
+const COLORS = ['#bee4ea', '#1ba5b8', '#21e482', '#0e5172'];
+
 const NBSP = ' ';
 
 const randomNumber = (min, max) =>
@@ -96,11 +99,13 @@ export class TypeShuffle {
         const tick = () => {
           if (i >= cycles) {
             char.textContent = finalChar;
+            char.style.color = ''; // revert to the CSS colour once stable
             settled += 1;
             if (settled === this.total) this.isAnimating = false;
             return;
           }
           char.textContent = this.#randomChar();
+          char.style.color = COLORS[randomNumber(0, COLORS.length - 1)];
           i += 1;
           this.timers.push(setTimeout(tick, 40));
         };
