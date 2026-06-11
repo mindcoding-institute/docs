@@ -548,7 +548,12 @@
     padding: 0 0.5ch;
   }
 
-  /* ---- Splitting / TypeShuffle chars ----------------------------------- */
+  /* ---- TypeShuffle word/char wrapping ---------------------------------- */
+  /* words stay atomic so lines break only at spaces, never mid-word */
+  .shuffle .word {
+    display: inline-block;
+    white-space: nowrap;
+  }
   .shuffle .char {
     display: inline-block;
     will-change: contents;

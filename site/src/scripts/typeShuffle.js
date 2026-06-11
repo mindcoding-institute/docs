@@ -28,24 +28,33 @@ export class TypeShuffle {
     this.#build();
   }
 
-  /** Wrap each visible character in a .char span; keep spaces as real
-   *  breaking whitespace so multi-word lines can wrap normally. */
+  /** Wrap each word in a .word span (inline-block, nowrap) so it never breaks
+   *  mid-word, and each visible character in a .char span inside it. Spaces
+   *  between words stay as real breaking whitespace, so lines wrap only there. */
   #build() {
     this.#stop();
     this.el.textContent = '';
     this.chars = [];
-    for (const ch of [...this.text]) {
-      if (ch === ' ') {
-        this.el.appendChild(document.createTextNode(' '));
-        continue;
+
+    const words = this.text.split(' ');
+    words.forEach((word, wi) => {
+      // real, breakable space between words
+      if (wi > 0) this.el.appendChild(document.createTextNode(' '));
+      if (word === '') return;
+
+      const wordEl = document.createElement('span');
+      wordEl.className = 'word';
+      for (const ch of [...word]) {
+        const span = document.createElement('span');
+        span.className = 'char';
+        span.dataset.char = ch;
+        span.textContent = ch;
+        wordEl.appendChild(span);
+        this.chars.push(span);
       }
-      const span = document.createElement('span');
-      span.className = 'char';
-      span.dataset.char = ch;
-      span.textContent = ch;
-      this.el.appendChild(span);
-      this.chars.push(span);
-    }
+      this.el.appendChild(wordEl);
+    });
+
     this.total = this.chars.length;
   }
 
