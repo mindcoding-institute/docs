@@ -1,5 +1,7 @@
 # Mind Coding
 
+[![Mind Coding Institute](https://img.shields.io/endpoint?url=https%3A%2F%2Fapi.workjournal.pro%2Fv1%2Fpublic%2F08a1b62c504e%2Fbadge)](https://app.workjournal.pro/public/08a1b62c504e)
+
 **The discipline of directing AI to build well-designed systems.**
 
 > Intent. Leverage. Judgment.
