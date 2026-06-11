@@ -6,6 +6,8 @@
 
 Mind coding is an umbrella philosophy for software development in the AI era. It holds that the developer's cognition is the source of design — AI is the instrument that extends it. The term exists so the discipline of doing this well can be named, taught, practiced, and shared.
 
+📄 **Read the full proposal:** [docs/proposal.md](docs/proposal.md) — the creed, the three pillars, the umbrella, and how to adopt it.
+
 ## The creed
 
 - **Intent** — you hold the design before the machine moves.
