@@ -7,3 +7,9 @@
 
 # node (site/ has its own, this guards the root)
 node_modules/
+
+# wrangler local deploy state
+.wrangler/
+
+# design source (Affinity) — kept local, not versioned
+logos/
