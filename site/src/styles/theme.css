@@ -112,6 +112,12 @@
     text-underline-offset: 2px;
   }
 
+  /* WebTUI's typography colours p/li teal (--foreground1); too low-contrast
+     on the dark background, so default body text to the light foreground */
+  p,
+  li {
+    color: var(--foreground0);
+  }
   p {
     margin-block: 0 0.9em;
   }
