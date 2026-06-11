@@ -72,7 +72,7 @@ const first = slides[0];
       }
     </nav>
 
-    <div class="shuffle tenet-title cursor">{first.title}</div>
+    <div class="shuffle tenet-title">{first.title}</div>
     <div class="shuffle tenet-expl">{first.explanation}</div>
 
     <div class="cta">
@@ -99,19 +99,29 @@ const first = slides[0];
     );
 
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const title = new TypeShuffle(titleEl);
-    const expl = new TypeShuffle(explEl);
+
+    // Fixed grids sized from all phrases so dimensions never change between slides.
+    const title = new TypeShuffle(
+      titleEl,
+      slides.map((s: { title: string }) => s.title)
+    );
+    const expl = new TypeShuffle(
+      explEl,
+      slides.map((s: { explanation: string }) => s.explanation),
+      { cols: 48 }
+    );
 
     let i = -1;
     const show = () => {
       i = (i + 1) % slides.length;
       const s = slides[i];
       pillarEls.forEach((el, name) => el.classList.toggle('active', name === s.pillar));
-      title.setText(s.title);
-      expl.setText(s.explanation);
-      if (!reduce) {
-        title.trigger({ spread: 650 });
-        expl.trigger({ spread: 1300 });
+      if (reduce) {
+        title.set(i);
+        expl.set(i);
+      } else {
+        title.to(i, { spread: 650 });
+        expl.to(i, { spread: 1300 });
       }
     };
 

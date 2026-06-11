@@ -23,6 +23,15 @@
   font-display: swap;
 }
 
+/* monospace Gohu — used for the fixed-grid shuffle so cells align (1ch each) */
+@font-face {
+  font-family: 'GohuFont uni14 Nerd Font Mono';
+  src: url('/fonts/GohuFontuni14NerdFontMono-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* --- Palette: map the 5-colour scheme onto WebTUI's variables ----------- */
 @layer base {
   :root {
@@ -403,22 +412,17 @@
     font-size: clamp(1.9rem, 6.5vw, 2rem);
     color: var(--accent);
     text-transform: uppercase;
-    letter-spacing: 0.03em;
     line-height: 1.15;
     min-height: 1.3em;
-    max-width: 32ch;
-    /* margin-inline: auto; */
   }
 
-  /* Tenet explanation — 2–3 shuffled lines in the body font */
+  /* Tenet explanation — fixed-grid shuffle in monospace Gohu */
   .tenet-expl {
-    font-family: var(--font-family);
+    font-family: 'GohuFont uni14 Nerd Font Mono', ui-monospace, monospace;
     font-size: clamp(1.1rem, 2.8vw, 1.5rem);
     color: var(--foreground0);
     line-height: 1.4;
-    min-height: 6.2em;
-    max-width: 52ch;
-    margin-inline: auto;
+    min-height: 5.6em;
     text-transform: capitalize;
   }
   .hero .tagline {
@@ -554,14 +558,17 @@
     padding: 0 0.5ch;
   }
 
-  /* ---- TypeShuffle word/char wrapping ---------------------------------- */
-  /* words stay atomic so lines break only at spaces, never mid-word */
-  .shuffle .word {
-    display: inline-block;
+  /* ---- TypeShuffle fixed grid ----------------------------------------- */
+  /* Each phrase is laid into a rigid ROWS×COLS grid of monospace cells, so
+     dimensions never change between phrases and shuffling can't cause reflow. */
+  .shuffle .row {
+    display: block;
     white-space: nowrap;
   }
-  .shuffle .char {
+  .shuffle .cell {
     display: inline-block;
+    width: 1ch;
+    text-align: center;
     will-change: contents;
   }
 }

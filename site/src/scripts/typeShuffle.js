@@ -1,166 +1,169 @@
 /**
- * TypeShuffle — a shuffling/sliding type animation.
+ * TypeShuffle — a fixed-grid "matrix" shuffle.
  *
- * Re-implementation of the codrops TypeShuffle effect
- * (https://github.com/codrops/TypeShuffleAnimation), trimmed to the `fx1`
- * left-to-right slide and adapted to cycle between phrases.
+ * Every phrase is word-wrapped into a fixed ROWS×COLS grid of monospace cells
+ * (spaces included as cells), sized once from all phrases so dimensions never
+ * change between phrases — no reflow, no jumps. A single ticker continuously
+ * scrambles every *unlocked* cell, so unresolved cells keep shuffling while the
+ * text reveals. A transition unlocks cells left-to-right (out) then locks them
+ * to the new targets left-to-right (in), all on the same persistent cells — so
+ * there is no switch between the out and in passes.
  *
- * Self-contained: splits text into per-character <span class="char"> nodes
- * itself (no Splitting.js dependency), then cascades random glyphs into each
- * cell before settling on the final character.
+ * Requires a monospace font on the element (1ch == one cell).
  */
 
 const CHARSET =
   'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&@$<>/\\*+-=:;.'.split('');
 
-// palette colours flashed on characters while they shuffle; cleared on settle
+// palette colours flashed on cells while they shuffle; cleared on lock
 const COLORS = ['#bee4ea', '#1ba5b8', '#21e482', '#0e5172'];
 
 const NBSP = ' ';
 
-const randomNumber = (min, max) =>
-  Math.floor(Math.random() * (max - min + 1)) + min;
+const rnd = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+/** Word-wrap `text` into lines no wider than `cols` (hard-splitting any word
+ *  longer than a full line). Returns an array of line strings. */
+function wrapRows(text, cols) {
+  const rows = [];
+  let line = '';
+  for (const word of text.split(' ')) {
+    let w = word;
+    while (w.length > cols) {
+      if (line) {
+        rows.push(line);
+        line = '';
+      }
+      rows.push(w.slice(0, cols));
+      w = w.slice(cols);
+    }
+    if (line === '') line = w;
+    else if (line.length + 1 + w.length <= cols) line += ' ' + w;
+    else {
+      rows.push(line);
+      line = w;
+    }
+  }
+  if (line !== '') rows.push(line);
+  return rows.length ? rows : [''];
+}
 
 export class TypeShuffle {
-  /** @param {HTMLElement} el */
-  constructor(el) {
+  /**
+   * @param {HTMLElement} el
+   * @param {string[]} phrases all phrases this element will cycle through
+   * @param {{cols?: number}} opts
+   */
+  constructor(el, phrases, { cols } = {}) {
     this.el = el;
-    this.isAnimating = false;
+    this.phrases = phrases;
+    // default: widest single line fits on one row
+    this.cols = cols || Math.max(1, ...phrases.map((p) => p.length));
+    this.wrapped = phrases.map((p) => wrapRows(p, this.cols));
+    this.rows = Math.max(1, ...this.wrapped.map((r) => r.length));
+
     this.timers = [];
-    this.text = (this.el.textContent || '').trim();
     this.#build();
+
+    this.locked = new Array(this.cells.length).fill(true);
+    this.#startTicker();
   }
 
-  /** Wrap each word in a .word span (inline-block, nowrap) so it never breaks
-   *  mid-word, and each visible character in a .char span inside it. Spaces
-   *  between words stay as real breaking whitespace, so lines wrap only there. */
+  /** Build the ROWS×COLS grid of cells. */
   #build() {
-    this.#stop();
     this.el.textContent = '';
-    this.chars = [];
-
-    const words = this.text.split(' ');
-    words.forEach((word, wi) => {
-      // real, breakable space between words
-      if (wi > 0) this.el.appendChild(document.createTextNode(' '));
-      if (word === '') return;
-
-      const wordEl = document.createElement('span');
-      wordEl.className = 'word';
-      for (const ch of [...word]) {
-        const span = document.createElement('span');
-        span.className = 'char';
-        span.dataset.char = ch;
-        span.textContent = ch;
-        wordEl.appendChild(span);
-        this.chars.push(span);
+    this.cells = [];
+    for (let r = 0; r < this.rows; r++) {
+      const row = document.createElement('span');
+      row.className = 'row';
+      for (let c = 0; c < this.cols; c++) {
+        const cell = document.createElement('span');
+        cell.className = 'cell';
+        cell.textContent = NBSP;
+        row.appendChild(cell);
+        this.cells.push(cell);
       }
-      this.el.appendChild(wordEl);
-    });
-
-    this.total = this.chars.length;
+      this.el.appendChild(row);
+    }
   }
 
-  /** Swap in new text and rebuild (used to cycle phrases). */
-  setText(text) {
-    this.text = text;
-    this.#build();
+  /** Flat array (row-major) of target glyphs for phrase `index`; ' ' for pad.
+   *  Each line is centred within the grid (padded on both sides). */
+  #targets(index) {
+    const lines = this.wrapped[index] || [''];
+    const out = [];
+    for (let r = 0; r < this.rows; r++) {
+      const line = lines[r] || '';
+      const pad = Math.max(0, (this.cols - line.length) >> 1);
+      for (let c = 0; c < this.cols; c++) {
+        const li = c - pad;
+        out.push(li >= 0 && li < line.length ? line[li] : ' ');
+      }
+    }
+    return out;
   }
 
-  #randomChar() {
-    return CHARSET[randomNumber(0, CHARSET.length - 1)];
+  #scramble(cell) {
+    cell.textContent = CHARSET[rnd(0, CHARSET.length - 1)];
+    cell.style.color = COLORS[rnd(0, COLORS.length - 1)];
+  }
+
+  #lock(cell, glyph) {
+    cell.textContent = glyph === ' ' ? NBSP : glyph;
+    cell.style.color = '';
+  }
+
+  #startTicker() {
+    this.ticker = setInterval(() => {
+      for (let i = 0; i < this.cells.length; i++) {
+        if (!this.locked[i]) this.#scramble(this.cells[i]);
+      }
+    }, 45);
   }
 
   #stop() {
-    if (this.timers) for (const t of this.timers) clearTimeout(t);
+    for (const t of this.timers) clearTimeout(t);
     this.timers = [];
   }
 
-  /** fx1 — characters slide/cascade in from left to right.
-   *  `spread` bounds the total stagger (ms) so long strings still settle
-   *  quickly regardless of length. */
-  fx1(spread = 1000) {
-    if (this.isAnimating || this.total === 0) return;
-    this.isAnimating = true;
-
-    // start every cell blank
-    for (const c of this.chars) c.textContent = NBSP;
-
-    const step = this.total > 1 ? spread / (this.total - 1) : 0;
-
-    let settled = 0;
-    this.chars.forEach((char, position) => {
-      const finalChar = char.dataset.char;
-      const cycles = randomNumber(3, 10);
-      let i = 0;
-
-      // staggered start → the left-to-right slide
-      const startTimer = setTimeout(() => {
-        const tick = () => {
-          if (i >= cycles) {
-            char.textContent = finalChar;
-            char.style.color = ''; // revert to the CSS colour once stable
-            settled += 1;
-            if (settled === this.total) this.isAnimating = false;
-            return;
-          }
-          char.textContent = this.#randomChar();
-          char.style.color = COLORS[randomNumber(0, COLORS.length - 1)];
-          i += 1;
-          this.timers.push(setTimeout(tick, 40));
-        };
-        tick();
-      }, position * step);
-
-      this.timers.push(startTimer);
-    });
-  }
-
-  trigger(opts = {}) {
-    this.fx1(opts.spread);
-  }
-}
-
-/**
- * Mount a cycling shuffle on an element: shuffle the first phrase in, hold,
- * then shuffle to the next, looping forever. Honours reduced-motion.
- *
- * @param {HTMLElement} el
- * @param {string[]} phrases
- * @param {number} holdMs how long to rest on each phrase
- */
-export function mountShuffle(el, phrases, holdMs = 3000) {
-  const list =
-    phrases && phrases.length ? phrases : [(el.textContent || '').trim()];
-
-  const reduce =
-    typeof matchMedia === 'function' &&
-    matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  const ts = new TypeShuffle(el);
-
-  if (reduce) {
-    // No animation: just rotate the text plainly.
-    let i = 0;
-    ts.setText(list[0]);
-    if (list.length > 1) {
-      setInterval(() => {
-        i = (i + 1) % list.length;
-        ts.setText(list[i]);
-      }, holdMs);
+  /** Instantly show phrase `index` (reduced-motion path). */
+  set(index) {
+    this.#stop();
+    const target = this.#targets(index);
+    for (let i = 0; i < this.cells.length; i++) {
+      this.locked[i] = true;
+      this.#lock(this.cells[i], target[i]);
     }
-    return;
   }
 
-  ts.setText(list[0]);
-  ts.trigger();
+  /**
+   * Transition into phrase `index`: unlock cells left-to-right (they join the
+   * running scramble), then lock them to the new glyphs left-to-right.
+   */
+  to(index, { spread = 1000, outSpread = spread } = {}) {
+    this.#stop();
+    const target = this.#targets(index);
+    const n = this.cells.length;
 
-  if (list.length <= 1) return;
+    const outStep = n > 1 ? outSpread / (n - 1) : 0;
+    const inStart = outSpread + 150;
+    const inStep = n > 1 ? spread / (n - 1) : 0;
 
-  let i = 0;
-  setInterval(() => {
-    i = (i + 1) % list.length;
-    ts.setText(list[i]);
-    ts.trigger();
-  }, holdMs);
+    for (let i = 0; i < n; i++) {
+      const idx = i;
+      // out: unlock so the ticker scrambles it
+      this.timers.push(
+        setTimeout(() => {
+          this.locked[idx] = false;
+        }, idx * outStep)
+      );
+      // in: lock to the final glyph
+      this.timers.push(
+        setTimeout(() => {
+          this.locked[idx] = true;
+          this.#lock(this.cells[idx], target[idx]);
+        }, inStart + idx * inStep)
+      );
+    }
+  }
 }
