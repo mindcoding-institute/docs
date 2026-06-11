@@ -124,8 +124,6 @@ None of this requires new tooling. It is a stance toward the tooling you already
 
 These are unresolved and are exactly where the proposal most needs pressure-testing:
 
-- **Defining a mind-multiplier.** How sharply should the term be defined to keep the umbrella disciplined as the catalog grows? A short, two-line admission test is one option.
-- **Structuring skillforests.** Are they organized by domain, by pillar, by seniority, or some combination? The shape is undecided.
 - **Format.** Should the philosophy be a manifesto (declarative, signed) or a living document (iterative, versioned)? This proposal currently leans toward the latter.
 - **Earned delegation.** The principle that AI takes on more decisions as it demonstrates reliable results is currently folded into *Skills compound* — every codified skill being a unit of earned delegation. Whether it deserves to stand on its own is worth revisiting once mind-multipliers are cataloged.
 
