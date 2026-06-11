@@ -7,7 +7,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "deploy": "astro build && npx --yes wrangler pages deploy dist --project-name=mindcoding-institute --branch=main --commit-dirty=true"
   },
   "dependencies": {
     "@webtui/css": "^0.1.3",
