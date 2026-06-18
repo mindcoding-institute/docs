@@ -44,4 +44,15 @@ const isActive = (href: string) => path === href.replace(/\/$/, '');
       }
     </ul>
   </div>
+
+  <div class="nav-group">
+    <p class="group">Multipliers</p>
+    <ul>
+      <li>
+        <a href="/multipliers/what" aria-current={isActive('/multipliers/what') ? 'page' : undefined}>
+          What Is a Multiplier?
+        </a>
+      </li>
+    </ul>
+  </div>
 </nav>
