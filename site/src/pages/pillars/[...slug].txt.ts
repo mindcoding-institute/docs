@@ -28,7 +28,10 @@ export const GET: APIRoute = ({ props }) => {
     '',
     resources.length
       ? resources
-          .map((r) => `- ${r.label}${r.url ? ` — ${r.url}` : ''}`)
+          .map(
+            (r) =>
+              `- ${r.label}${r.url ? ` — ${r.url}` : ''}${r.note ? ` (${r.note})` : ''}`
+          )
           .join('\n')
       : 'Coming soon.',
     '',

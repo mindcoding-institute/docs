@@ -19,7 +19,12 @@ tenets:
       prompt helps once; a codified skill helps every time, for everyone who has it.
       Earned delegation lives here: as a skill proves reliable, more of a task can
       be handed to it with confidence.
-resources: []
+resources:
+  - label: Articles
+    note: coming soon.
+  - label: Multipliers
+    url: https://multipliers.mindcoding.institute/?tags=LEVERAGE
+    note: the directory, filtered to Leverage
 ---
 
 Leverage is how a single developer reaches beyond the limits of their own hands.
