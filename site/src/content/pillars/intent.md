@@ -18,7 +18,12 @@ tenets:
       adopted, it is adopted because you judged it right, not because it was the
       first thing offered. A mind coder can always answer "why is it built this
       way?" with a reason they own.
-resources: []
+resources:
+  - label: Articles
+    note: coming soon.
+  - label: Multipliers
+    url: https://multipliers.mindcoding.institute/?tags=INTENT
+    note: the directory, filtered to Intent
 ---
 
 Intent is where design begins. It holds that the shape of a system — its purpose,

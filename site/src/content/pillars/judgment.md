@@ -19,7 +19,12 @@ tenets:
       understand what you are putting your name on. When understanding is missing,
       the honest move is to stop: read more, test more, narrow the change, or ask
       for a verifier — not to ship and hope.
-resources: []
+resources:
+  - label: Articles
+    note: coming soon.
+  - label: Multipliers
+    url: https://multipliers.mindcoding.institute/?tags=JUDGMENT
+    note: the directory, filtered to Judgment
 ---
 
 Judgment is the act through which design returns to the world as code. You decide
