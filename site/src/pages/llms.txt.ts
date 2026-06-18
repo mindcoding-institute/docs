@@ -20,6 +20,7 @@ export const GET: APIRoute = async () => {
     ...pillars.map(
       (p) => `- [${p.data.name}](/pillars/${p.id}.txt): ${p.data.summary}`
     ),
+    '- [What Is a Multiplier?](/multipliers/what.txt): the core unit of Mind Coding — a reusable artifact, practice, or method that raises what one mind can build, across six layers.',
     '',
   ].join('\n');
 

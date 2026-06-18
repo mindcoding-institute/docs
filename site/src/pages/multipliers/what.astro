@@ -1,0 +1,16 @@
+---
+import { getEntry, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const entry = await getEntry('sections', 'multipliers');
+const { Content } = await render(entry!);
+const { title, description } = entry!.data;
+---
+
+<BaseLayout title={`${title} — Mind Coding Institute`} description={description} docs>
+  <article class="prose">
+    <p class="pillar-tag">[ Multipliers ]</p>
+    <h1>{title}</h1>
+    <Content />
+  </article>
+</BaseLayout>
